@@ -40,7 +40,24 @@ describe('meetups', () => {
     * Test the GET /api/v1/meetups/:id route
     */
     describe('GET /api/v1/meetups/:id', () => {
-
+        it('it should return an not found error if the id does not exist', (done) => {
+          var meetup = {
+            id: db.meetups.length + 1,
+            createdOn: new Date(),
+            location: 'KIST',
+            topic: 'Intro to Git and GitHub',
+            happeningOn: new Date("10/11/2019")
+          };
+          db.meetups.push(meetup);
+          chai.request(app)
+                .get('/api/v1/meetups/' + (meetup.id + 2))
+                .end((err, res) => {
+                      res.should.have.status(404);
+                      res.body.status.should.be.eql(404);
+                      res.body.should.have.property('error');
+                  done();
+                });
+        });
         it('it should GET a meetup by the id given', (done) => {
 
           var meetup = {
@@ -60,7 +77,7 @@ describe('meetups', () => {
                       res.body.data[0].should.have.property('location');
                       res.body.data[0].should.have.property('topic');
                       res.body.data[0].should.have.property('happeningOn');
-                      res.body.data.length.should.be.eql(meetup.id);
+                      res.body.data.length.should.be.eql(1);
                   done();
                 });
 
@@ -165,18 +182,40 @@ describe('meetups', () => {
     * PATCH /api/v1/questions/:id/upvote
     */
     describe('PATCH /api/v1/questions/:id/upvote', () => {
-      it('it should increase the vote property for the question specified by :id', (done) => {
-        const question = {
+      it('it should return an not found error if the id does not exist', (done) => {
+        var question = {
           id: db.questions.length + 1,
           createdOn: new Date(),
+          title: 'how to join',
+          body: 'how to join the andela fellowship',
+          votes: 3
+        };
+        db.meetups.push(question);
+        chai.request(app)
+              .patch('/api/v1/questions/'+ (question.id + 2) +'/upvote')
+              .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.status.should.be.eql(404);
+                    res.body.should.have.property('error');
+                done();
+              });
+      });
+
+      it('it should increase the vote property for the question specified by :id', (done) => {
+        let question = {
+          id: db.questions.length + 1,
+          createdOn: new Date(),
+          meetup: 1,
           title: 'How to do',
           body:'I need to know how to host a api on Heroku',
-          vote:2
+          votes:2
         };
         db.questions.push(question);
+        console.log('question => '+ question.id +' => '+ question.votes);
         chai.request(app)
               .patch('/api/v1/questions/'+ question.id +'/upvote')
               .end((err, res) => {
+                    console.log('question => '+ question.id +' => '+ question.votes);
                     res.should.have.status(200);
                     res.body.status.should.be.eql(200);
                     res.body.data.should.be.a('array');
@@ -184,8 +223,7 @@ describe('meetups', () => {
                     res.body.data[0].should.have.property('meetup');
                     res.body.data[0].should.have.property('title');
                     res.body.data[0].should.have.property('body');
-                    res.body.data[0].should.have.property('votes').eql(question.vote + 1);
-                    res.body.data[0].should.have.property('id').eql(meetup.id);
+                    res.body.data[0].should.have.property('votes').eql(question.votes);
                 done();
               });
 
@@ -197,13 +235,33 @@ describe('meetups', () => {
     * PATCH /api/v1/questions/:id/downvote
     */
     describe('PATCH /api/v1/questions/:id/downvote', () => {
+      it('it should return an not found error if the id does not exist', (done) => {
+        var question = {
+          id: db.questions.length + 1,
+          createdOn: new Date(),
+          title: 'how to join',
+          body: 'how to join the andela fellowship',
+          votes: 3
+        };
+        db.meetups.push(question);
+        chai.request(app)
+              .patch('/api/v1/questions/'+ (question.id + 2) +'/upvote')
+              .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.status.should.be.eql(404);
+                    res.body.should.have.property('error');
+                done();
+              });
+      });
+
       it('it should decrease the vote property for the question specified by :id', (done) => {
         const question = {
           id: db.questions.length + 1,
           createdOn: new Date(),
+          meetup: 1,
           title: 'How to do',
           body:'I need to know how to host a api on Heroku',
-          vote:2
+          votes:2
         };
         db.questions.push(question);
         chai.request(app)
@@ -216,8 +274,7 @@ describe('meetups', () => {
                     res.body.data[0].should.have.property('meetup');
                     res.body.data[0].should.have.property('title');
                     res.body.data[0].should.have.property('body');
-                    res.body.data[0].should.have.property('votes').eql(question.vote - 1);
-                    res.body.data[0].should.have.property('id').eql(meetup.id);
+                    res.body.data[0].should.have.property('votes').eql(question.votes);
                 done();
               });
 

@@ -150,6 +150,53 @@ app.post('/api/v1/questions', (req, res) => {
 
 });
 
+//upvote a question
+app.patch('/api/v1/questions/:id/upvote', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  db.questions.forEach(function (question) {
+    if (question.id === id) {
+      question.votes += 1;
+      return res.status(200).send({
+        status: 200,
+        data:[{
+          meetup: question.meetup,
+          title: question.title,
+          body: question.body,
+          votes: question.votes
+        }]
+      });
+    }
+  });
+  return res.status(404).send({
+    status: 404,
+    error: 'the question id is not found'
+  });
+});
+
+//downvote a question
+app.patch('/api/v1/questions/:id/downvote', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  db.questions.forEach(function (question) {
+    if (question.id === id) {
+      question.votes -= 1;
+      return res.status(200).send({
+        status: 200,
+        data:[{
+          meetup: question.meetup,
+          title: question.title,
+          body: question.body,
+          votes: question.votes
+        }]
+      });
+    }
+
+  });
+  return res.status(404).send({
+    status: 404,
+    error: 'the question id is not found'
+  });
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
