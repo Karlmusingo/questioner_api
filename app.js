@@ -132,8 +132,8 @@ app.post('/api/v1/questions', (req, res) => {
     title: req.body.title,
     body: req.body.body,
     votes: 0,
-    user: req.body.user,
-    meetup: req.body.meetup
+    user: parseInt(req.body.user),
+    meetup: parseInt(req.body.meetup)
   };
 
   db.questions.push(question);
@@ -218,7 +218,7 @@ app.post('/api/v1/meetups/:id/rsvps', (req, res) => {
       const rsvp = {
         id : db.rsvps.length + 1,
         meetup : meetup.id,
-        user: req.body.user,
+        user: parseInt(req.body.user),
         status: req.body.status
       };
       db.rsvps.push(rsvp);
@@ -237,6 +237,29 @@ app.post('/api/v1/meetups/:id/rsvps', (req, res) => {
   return res.status(404).send({
     status: 404,
     error: 'the meetup id provided is not found'
+  });
+});
+//get questions for a specific meetup
+app.get('/api/v1/questions/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  db.meetups.forEach(function (meetup) {
+    if(meetup.id === id){
+      const data = [];
+      db.questions.forEach(function (question) {
+        console.log(question);
+        if(question.meetup === meetup.id){
+          data.push(question);
+        }
+      });
+      return res.status(200).send({
+        status: 200,
+        data: data
+      });
+    }
+  });
+  return res.status(404).send({
+    status: 404,
+    error : 'the meetup provided is not found'
   });
 });
 
