@@ -13,9 +13,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //get all meetups
 app.get('/api/v1/meetups', (req, res) => {
+  const data = [];
+  db.meetups.forEach(function(meetup) {
+    data.push({
+      id: meetup.id,
+      location: meetup.location,
+      topic: meetup.topic,
+      happeningOn: meetup.happeningOn,
+      tags: meetup.tags
+    });
+  });
   res.status(200).send({
     status: 200,
-    data: db.meetups
+    data: data
   })
 });
 
