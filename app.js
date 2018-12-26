@@ -61,7 +61,13 @@ app.get('/api/v1/meetups/:id', (req, res) => {
     if(meetup.id === id){
       return res.status(200).send({
         status: 200,
-        data: [meetup]
+        data: [{
+          id: meetup.id,
+          topic: meetup.topic,
+          location: meetup.location,
+          happeningOn: meetup.happeningOn,
+          tags: meetup.tags
+        }]
       })
     }
   });
@@ -125,10 +131,10 @@ app.post('/api/v1/questions', (req, res) => {
   return res.status(201).send({
     status: 201,
     data:[{
-      'user': question.user,
-      'meetup': question.meetup,
-      'title': question.title,
-      'body': question.body
+      user: question.user,
+      meetup: question.meetup,
+      title: question.title,
+      body: question.body
     }]
   });
 

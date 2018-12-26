@@ -57,7 +57,6 @@ describe('meetups', () => {
                       res.should.have.status(200);
                       res.body.status.should.be.eql(200);
                       res.body.data.should.be.a('array');
-                      res.body.data[0].should.have.property('createdOn');
                       res.body.data[0].should.have.property('location');
                       res.body.data[0].should.have.property('topic');
                       res.body.data[0].should.have.property('happeningOn');
