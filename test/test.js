@@ -277,8 +277,6 @@ describe('meetups', () => {
                     res.body.data[0].should.have.property('votes').eql(question.votes);
                 done();
               });
-
-
       });
     });
 
@@ -287,15 +285,60 @@ describe('meetups', () => {
     * POST /meetups/:id/rsvps
     */
     describe('POST /meetups/:id/rsvps', () => {
+      it('it should return a not found error if the id does not exist', (done) => {
+        const meetup = {
+          id: db.meetups.length + 1,
+          createdOn: new Date(),
+          location: 'KIST',
+          topic: 'Intro to Git and GitHub',
+          happeningOn: new Date("10/11/2019")
+        };
+        db.meetups.push(meetup);
+        const rsvp = {
+          id: db.rsvps.length + 1,
+          meetup: 1,
+          user: 1,
+          status: 'yes'
+        };
+        db.rsvps.push(rsvp);
+        chai.request(app)
+            .post('/api/v1/meetups/'+ (meetup.id + 2) +'/rsvps')
+            .send(rsvp)
+            .end((err, res) => {
+              res.should.have.status(404);
+              res.body.status.should.be.eql(404);
+              res.body.should.have.property('error');
+              done();
+            });
+      });
+
+      it('it should not post a rsvp without the status and the user properties', (done) => {
+        const rsvp = {
+          id: db.rsvps.length + 1,
+          meetup: 1,
+          user: 1,
+        };
+        db.rsvps.push(rsvp);
+        chai.request(app)
+            .post('/api/v1/meetups/'+ (rsvp.meetup + 2) +'/rsvps')
+            .send(rsvp)
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.status.should.be.eql(400);
+              res.body.should.have.property('error');
+              done();
+            });
+      });
+
       it('it should reponse to a meetup rsvp specified by the :id', (done) => {
         const rsvp = {
           id: db.rsvps.length + 1,
           meetup: 1,
           user: 1,
-          response: 'yes'
+          status: 'yes'
         };
         chai.request(app)
-            .post('/meetups/'+rsvp.meetup+'/rsvps')
+            .post('/api/v1/meetups/'+rsvp.meetup+'/rsvps')
             .send(rsvp)
             .end((err, res) => {
               res.should.have.status(201);
@@ -303,16 +346,61 @@ describe('meetups', () => {
               res.body.data.should.be.a('array');
               res.body.data.length.should.be.eql(1);
               res.body.data[0].should.have.property('meetup');
-              res.body.data[0].should.have.property('user');
-              res.body.data[0].should.have.property('response');
-              res.body.data[0].should.have.property('id').eql(rsvp.id);
+              res.body.data[0].should.have.property('status');
               done();
             });
 
       });
     });
+
     /*
-    * /*
+    * GET /api/v1/questions/:id'
+    */
+    describe('GET /api/v1/questions/:id', () => {
+      it('it should return a not found error when the meetup id is not found', (done) => {
+
+        chai.request(app)
+              .get('/api/v1/questions/' + 20)
+              .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.status.should.be.eql(404);
+                    res.body.should.have.property('error');
+                done();
+              });
+      });
+
+      it('it should questions for the specified meetup', (done) => {
+        const meetup = {
+          id: db.meetups.length + 1,
+          createdOn: new Date(),
+          location: 'KIST',
+          topic: 'Intro to Git and GitHub',
+          happeningOn: new Date("10/11/2019")
+        };
+        db.meetups.push(meetup);
+        const question = {
+          id: db.questions.length + 1,
+          createdOn: new Date(),
+          meetup: meetup.id,
+          title: 'How to do',
+          body:'I need to know how to host a api on Heroku',
+          votes:2
+        };
+        db.questions.push(question);
+        chai.request(app)
+              .get('/api/v1/questions/' + 1)
+              .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.status.should.be.eql(200);
+                    res.body.data.should.be.a(array);
+                    res.body.data.length.should.be.eql(1);
+                    res.body.data[0].should.have.property('id').eql(question.id);
+                done();
+              });
+      });
+    });
+
+    /*
     * DELETE /meetups/:id
     */
     describe('DELETE /api/v1/meetups/:id', () => {

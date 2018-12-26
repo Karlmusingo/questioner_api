@@ -197,6 +197,49 @@ app.patch('/api/v1/questions/:id/downvote', (req, res) => {
   });
 });
 
+//respond to a meetup rsvp
+app.post('/api/v1/meetups/:id/rsvps', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if(!req.body.user){
+    return res.status(400).send({
+      status: 400,
+      error: 'the user property is required in order to send an RSVP'
+    });
+  }else if (!req.body.status) {
+    return res.status(400).send({
+      status: 400,
+      error: 'the status property is required in order to send an RSVP'
+    });
+  }
+
+  db.meetups.forEach(function (meetup) {
+    if(meetup.id === id){
+      const rsvp = {
+        id : db.rsvps.length + 1,
+        meetup : meetup.id,
+        user: req.body.user,
+        status: req.body.status
+      };
+      db.rsvps.push(rsvp);
+
+      return res.status(201).send({
+        status: 201,
+        data: [{
+          meetup: rsvp.meetup,
+          topic: meetup.topic,
+          status: rsvp.status
+        }]
+      });
+    }
+  });
+
+  return res.status(404).send({
+    status: 404,
+    error: 'the meetup id provided is not found'
+  });
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
