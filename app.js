@@ -94,11 +94,44 @@ app.post('/api/v1/questions', (req, res) => {
       error: 'the title property is required'
     });
   } else if (!req.body.body) {
-    return res.status(400).send(
+    return res.status(400).send({
       status: 400,
       error: 'the body property is required'
-    );
+    });
+  } else if (!req.body.user) {
+    return res.status(400).send({
+      status: 400,
+      error: 'the user property is required'
+    });
+  } else if (!req.body.meetup) {
+    return res.status(400).send({
+      status: 400,
+      error: 'the meetup property is required'
+    });
   }
+
+  const question = {
+    id: db.questions.length + 1,
+    createdOn : new Date(),
+    title: req.body.title,
+    body: req.body.body,
+    votes: 0,
+    user: req.body.user,
+    meetup: req.body.meetup
+  };
+
+  db.questions.push(question);
+
+  return res.status(201).send({
+    status: 201,
+    data:[{
+      'user': question.user,
+      'meetup': question.meetup,
+      'title': question.title,
+      'body': question.body
+    }]
+  });
+
 });
 
 const PORT = 5000;

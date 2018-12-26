@@ -1,5 +1,5 @@
 //During the test the env variable is set to test
-// process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'test';
 
 const db = require("../db/db");
 
@@ -118,7 +118,7 @@ describe('meetups', () => {
     *Test the POST /api/v1/questions route
     */
     describe('POST /api/v1/questions', () => {
-      it('it should not post a question without the title or the body', (done) => {
+      it('it should not post a question without the title, the body, user or meetup', (done) => {
         const question = {
           id: db.questions.length + 1,
           createdOn: new Date(),
@@ -141,7 +141,9 @@ describe('meetups', () => {
           id: db.questions.length + 1,
           createdOn: new Date(),
           title: 'How to do',
-          body:'I need to know how to host a api on Heroku'
+          body:'I need to know how to host a api on Heroku',
+          user: 1,
+          meetup: 1
         };
         chai.request(app)
             .post('/api/v1/questions')
@@ -151,10 +153,10 @@ describe('meetups', () => {
               res.body.status.should.be.eql(201);
               res.body.data.should.be.a('array');
               res.body.data.length.should.be.eql(1);
+              res.body.data[0].should.have.property('user');
               res.body.data[0].should.have.property('meetup');
               res.body.data[0].should.have.property('title');
               res.body.data[0].should.have.property('body');
-              res.body.data[0].should.have.property('id').eql(question.id);
               done();
             });
       });
@@ -237,7 +239,7 @@ describe('meetups', () => {
           response: 'yes'
         };
         chai.request(app)
-            .post('/meetups/'+rsvp.meetup'/rsvps')
+            .post('/meetups/'+rsvp.meetup+'/rsvps')
             .send(rsvp)
             .end((err, res) => {
               res.should.have.status(201);
