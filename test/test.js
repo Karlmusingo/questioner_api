@@ -13,12 +13,12 @@ chai.use(chaiHttp);
 //Our parent block
 describe('meetups', () => {
   //Before each test we empty the database
-    before((done) => {
-      db.meetups.forEach(function() {
-        db.meetups.pop();
-        done();
-      });
-    });
+    // before((done) => {
+    //   db.meetups.forEach(function() {
+    //     db.meetups.pop();
+    //     done();
+    //   });
+    // });
 /*
   * Test the GET /api/v1/meetups route
   */
@@ -30,11 +30,28 @@ describe('meetups', () => {
                   res.should.have.status(200);
                   res.body.status.should.be.eql(200);
                   res.body.data.should.be.a('array');
-                  res.body.data.length.should.be.eql(0);
+                  res.body.data.length.should.be.eql(3);
               done();
             });
       });
   });
+
+  /*
+    * Test the GET /api/v1/meetups/upcoming/all route
+    */
+    describe('GET /api/v1/meetups/upcoming/all', () => {
+        it('it should GET all upcoming meetups', (done) => {
+          chai.request(app)
+              .get('/api/v1/meetups/upcoming/all')
+              .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.status.should.be.eql(200);
+                    res.body.data.should.be.a('array');
+                    res.body.data.length.should.be.eql(2);
+                done();
+              });
+        });
+    });
 
   /*
     * Test the GET /api/v1/meetups/:id route

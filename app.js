@@ -89,16 +89,17 @@ app.get('/api/v1/meetups/:id', (req, res) => {
 });
 
 //get all upcoming meetups
-app.get('/api/v1/meetups/upcoming', (req, res) => {
+app.get('/api/v1/meetups/upcoming/all', (req, res) => {
   var today = new Date();
-  const upcomings = db.meetups.map(function(meetup){
+  const upcomings = [];
+  db.meetups.forEach((meetup) => {
     if(meetup.happeningOn > today){
-      return meetup;
+      upcomings.push(meetup);
     }
-    res.status(200).send({
-      status: 200,
-      data: upcomings
-    });
+  });
+  res.status(200).send({
+    status: 200,
+    data: upcomings
   });
 });
 
