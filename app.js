@@ -265,7 +265,7 @@ app.get('/api/v1/questions/:id', (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`server running on port ${PORT}`)
 });
 module.exports = app;
