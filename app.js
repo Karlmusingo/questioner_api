@@ -1,4 +1,3 @@
-
 // Set up the express app
 var express = require('express');
 var meetups = require('./db/meetups');
