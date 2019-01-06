@@ -2,6 +2,11 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var db = require('./db/db');
+// var pg = require('pg');
+// //var format = require('pg-format');
+// var jwt = require('jsonwebtoken');
+//
+// const connectionString = 'postgres://qvkzvdrmrnqxga:568033af0c5b28ce509be40e53461507b76942974440f1b6dd5696e8b6f09d17@ec2-54-235-80-210.compute-1.amazonaws.com:5432/d4fu89kgcj5rkc'
 
 
 const app = express();
@@ -264,7 +269,5 @@ app.get('/api/v1/questions/:id', (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
-});
+app.listen(5000);
 module.exports = app;
