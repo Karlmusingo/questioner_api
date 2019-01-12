@@ -30,7 +30,7 @@ describe('meetups', () => {
                   res.should.have.status(200);
                   res.body.status.should.be.eql(200);
                   res.body.data.should.be.a('array');
-                  res.body.data.length.should.be.eql(3);
+                  res.body.data.length.should.be.eql(2);
               done();
             });
       });
@@ -47,7 +47,7 @@ describe('meetups', () => {
                     res.should.have.status(200);
                     res.body.status.should.be.eql(200);
                     res.body.data.should.be.a('array');
-                    res.body.data.length.should.be.eql(2);
+                    res.body.data.length.should.be.eql(1);
                 done();
               });
         });
