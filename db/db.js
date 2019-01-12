@@ -20,7 +20,6 @@ const meetups = [
     location: 'KIST',
     image: 'img/img.jpg',
     topic: 'ALCinRwanda meetup',
-    happeningOn: new Date('10/22/2019'),
     tags: ['tag1', 'tag2', 'tag3']
   },
   {
