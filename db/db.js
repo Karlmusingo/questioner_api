@@ -20,7 +20,25 @@ const meetups = [
     location: 'KIST',
     image: 'img/img.jpg',
     topic: 'ALCinRwanda meetup',
-    happeningOn: new Date('22/12/2019'),
+    happeningOn: new Date('10/22/2019'),
+    tags: ['tag1', 'tag2', 'tag3']
+  },
+  {
+    id: 2,
+    createdOn: new Date('10/12/2018'),
+    location: 'KIST',
+    image: 'img/img.jpg',
+    topic: 'ALCinRwanda meetup',
+    happeningOn: new Date('10/12/2018'),
+    tags: ['tag1', 'tag2', 'tag3']
+  },
+  {
+    id: 3,
+    createdOn: new Date('10/12/2018'),
+    location: 'KIST',
+    image: 'img/img.jpg',
+    topic: 'ALCinRwanda meetup',
+    happeningOn: new Date('10/22/2019'),
     tags: ['tag1', 'tag2', 'tag3']
   }
 ];

@@ -1,10 +1,36 @@
-
 // Set up the express app
 var express = require('express');
 var bodyParser = require('body-parser');
 var db = require('./db/db');
+var pg = require('pg');
 
+ //connectionString = 'postgres://qvkzvdrmrnqxga:568033af0c5b28ce509be40e53461507b76942974440f1b6dd5696e8b6f09d17@ec2-54-235-80-210.compute-1.amazonaws.com:5432/d4fu89kgcj5rkc';
 
+// const pool = new pg.Pool({
+//   user: 'qvkzvdrmrnqxga',
+//   host: 'ec2-54-235-80-210.compute-1.amazonaws.com',
+//   database: 'd4fu89kgcj5rkc',
+//   password: '568033af0c5b28ce509be40e53461507b76942974440f1b6dd5696e8b6f09d17',
+//   port: 5432
+//   // connectionString: connectionString
+// });
+//
+// pool.query('SELECT NOW()', (err, res) => {
+//   console.log('ok')
+//   console.log(err, res)
+//   pool.end()
+// });
+
+/*const client = new pg.Client({
+  connectionString: connectionString
+})
+client.connect()
+
+client.query('SELECT NOW()', (err, res) => {
+  console.log(err, res)
+  client.end()
+})
+*/
 const app = express();
 
 // Parse incoming requests data
@@ -89,16 +115,17 @@ app.get('/api/v1/meetups/:id', (req, res) => {
 });
 
 //get all upcoming meetups
-app.get('/api/v1/meetups/upcoming', (req, res) => {
+app.get('/api/v1/meetups/upcoming/all', (req, res) => {
   var today = new Date();
-  const upcomings = db.meetups.map(function(meetup){
+  const upcomings = [];
+  db.meetups.forEach((meetup) => {
     if(meetup.happeningOn > today){
-      return meetup;
+      upcomings.push(meetup);
     }
-    res.status(200).send({
-      status: 200,
-      data: upcomings
-    });
+  });
+  res.status(200).send({
+    status: 200,
+    data: upcomings
   });
 });
 
